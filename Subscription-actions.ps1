@@ -8,13 +8,29 @@ $AccessToken = Invoke-RestMethod -uri $url -ContentType 'application/x-www-form-
 $AccessToken.access_token
 
 
-
 $headers=@{Authorization="Bearer $($AccessToken.access_token)"
     'Accept'='application/json'
 }
 
 $url =  "https://management.azure.com/providers/Microsoft.Billing/enrollmentAccounts?api-version=2018-03-01-preview" 
-Invoke-RestMethod -uri $url -ContentType 'application/json' -Headers $headers -Method 'GET'
+$enrollmentaccounts = Invoke-RestMethod -uri $url -ContentType 'application/json' -Headers $headers -Method 'GET'
+
+$request = @"
+{
+  "displayName": "Dev Team Subscription",
+  "offerType": "MS-AZR-0017P",
+  "owners": [
+    {
+      "objectId": "$OBJECTID"
+    }
+  ]
+}
+"@
+
+
+$url =  "https://management.azure.com/providers/Microsoft.Billing/enrollmentAccounts/$ENROLLMENTACCOUNT/providers/Microsoft.Subscription/createSubscription?api-version=2018-03-01-preview"
+$enrollmentaccounts = Invoke-RestMethod -uri $url -ContentType 'application/json' -Headers $headers -Method 'POST' -Body $request
+
 
 <#
 GET https://management.azure.com/providers/Microsoft.Billing/enrollmentAccounts?api-version=2018-03-01-preview
