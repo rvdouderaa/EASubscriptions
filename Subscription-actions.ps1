@@ -17,7 +17,7 @@ $headers=@{Authorization="Bearer $($AccessToken.access_token)"
 
 $request = @"
 {
-  "displayName": "Dev Team Subscription 102",
+  "displayName": "JMB-RVDO-TEST-20200826-3",
   "offerType": "MS-AZR-0017P",
   "owners": [
     {
@@ -28,5 +28,11 @@ $request = @"
 "@
 
 
-$url =  "https://management.azure.com/providers/Microsoft.Billing/enrollmentAccounts/$ENROLLMENTACCOUNT/providers/Microsoft.Subscription/createSubscription?api-version=2018-03-01-preview"
-$result = Invoke-RestMethod -uri $url -ContentType 'application/json' -Headers $headers -Method 'POST' -Body $request
+$url =  "https://management.azure.com/providers/Microsoft.Billing/enrollmentAccounts/$ENROLLMENTACCOUNT/providers/Microsoft.Subscription/createSubscription?api-version=2019-10-01-preview"
+# https://subscriptionrp.trafficmanager.net
+# ttps://management.azure.com/
+
+# $result = Invoke-RestMethod -uri $url -ContentType 'application/json' -Headers $headers -Method 'POST' -Body $request -ResponseHeadersVariable $headerresult -verbose
+
+$wresult = Invoke-WebRequest -Uri $url -ContentType 'application/json' -Headers $headers -Method 'POST' -Body $request -verbose
+Invoke-WebRequest -uri $wresult.Headers.Location[0] -ContentType 'application/json' -Headers $headers
